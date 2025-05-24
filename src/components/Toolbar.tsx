@@ -1,92 +1,103 @@
+// src/components/Toolbar.tsx
 import React from 'react';
-import { ComponentType, ToolMode } from '../models/types';
-import './Toolbar.css';
+import { ComponentType, ToolMode, SubCircuit } from '../types/types'; // Import SubCircuit
 
 interface ToolbarProps {
-  selectedComponent: ComponentType;
-  onSelectComponent: (type: ComponentType) => void;
-  onDelete: () => void;
-  toolMode: ToolMode;
-  onToolModeChange: (mode: ToolMode) => void;
-  hasSelection: boolean;
+  selectedTool: ToolMode;
+  setSelectedTool: (mode: ToolMode) => void;
+  selectedComponentType: ComponentType;
+  setSelectedComponentType: (type: ComponentType) => void;
+  // New prop for managing custom subcircuits
+  subcircuits: SubCircuit[];
+  onStartDragComponent: (type: ComponentType, subcircuitId?: string) => void; // New prop for drag start
+  onCreateSubcircuit: () => void; // New prop for creating subcircuits
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ 
-  selectedComponent, 
-  onSelectComponent,
-  onDelete,
-  toolMode,
-  onToolModeChange,
-  hasSelection
+const Toolbar: React.FC<ToolbarProps> = ({
+  selectedTool,
+  setSelectedTool,
+  selectedComponentType,
+  setSelectedComponentType,
+  subcircuits, // Added prop
+  onStartDragComponent, // Added prop
+  onCreateSubcircuit, // Added prop
 }) => {
-  const componentButtons = [
-    { label: 'Resistor', type: 'resistor' as ComponentType, icon: 'R' },
-    { label: 'Voltage Source', type: 'voltage' as ComponentType, icon: 'V' },
-    { label: 'Capacitor', type: 'capacitor' as ComponentType, icon: 'C' },
-    { label: 'Inductor', type: 'inductor' as ComponentType, icon: 'L' },
-    { label: 'Diode', type: 'diode' as ComponentType, icon: 'D' },
-    { label: 'AND Gate', type: 'logic-gate' as ComponentType, icon: 'AND' },
-    { label: 'OR Gate', type: 'logic-gate' as ComponentType, icon: 'OR' },
-    { label: 'NOT Gate', type: 'logic-gate' as ComponentType, icon: 'NOT' },
-    { label: 'NPN Transistor', type: 'transistor' as ComponentType, icon: 'NPN' },
-    { label: 'PNP Transistor', type: 'transistor' as ComponentType, icon: 'PNP' },
-    { label: 'Light Bulb', type: 'bulb' as ComponentType, icon: '💡' },
+  const basicComponents: ComponentType[] = [
+    'resistor', 'capacitor', 'inductor',
+    'voltage', 'diode', 'transistor', 'bulb'
   ];
+
+  const handleDragStart = (e: React.DragEvent, type: ComponentType, subcircuitId?: string) => {
+    // Set the data that will be transferred during the drag
+    e.dataTransfer.setData('text/plain', type + (subcircuitId ? `:${subcircuitId}` : ''));
+    e.dataTransfer.effectAllowed = 'copy';
+    onStartDragComponent(type, subcircuitId); // Notify parent App.tsx
+  };
 
   return (
     <div className="toolbar">
-      {/* Mode Selection */}
-      <div className="toolbar-section">
+      <div className="tool-section">
         <h3>Tools</h3>
         <button
-          className={`tool-button ${toolMode === 'select' ? 'active' : ''}`}
-          onClick={() => onToolModeChange('select')}
+          className={selectedTool === 'select' ? 'active' : ''}
+          onClick={() => setSelectedTool('select')}
         >
-          <span className="tool-icon">🖱️</span>
-          <span className="tool-label">Select/Move</span>
+          Select
         </button>
         <button
-          className={`tool-button ${toolMode === 'add' ? 'active' : ''}`}
-          onClick={() => onToolModeChange('add')}
+          className={selectedTool === 'wire' ? 'active' : ''}
+          onClick={() => setSelectedTool('wire')}
         >
-          <span className="tool-icon">➕</span>
-          <span className="tool-label">Add Components</span>
+          Wire
+        </button>
+        <button
+          className={selectedTool === 'subcircuit_create' ? 'active' : ''}
+          onClick={onCreateSubcircuit} // Calls the new handler
+        >
+          Create Subcircuit
         </button>
       </div>
 
-      {/* Components List */}
-      <div className="toolbar-section">
-        <h3>Components</h3>
-        <div className="component-buttons">
-          {componentButtons.map(({ label, type, icon }) => (
+      <div className="tool-section">
+        <h3>Basic Components</h3>
+        {basicComponents.map(type => (
+          <button
+            key={type}
+            className={selectedComponentType === type ? 'active' : ''}
+            onClick={() => {
+              setSelectedTool('add');
+              setSelectedComponentType(type);
+            }}
+            draggable="true" // Make buttons draggable
+            onDragStart={(e) => handleDragStart(e, type)} // Handle drag start
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {/* New section for Subcircuits */}
+      {subcircuits.length > 0 && (
+        <div className="tool-section">
+          <h3>My Subcircuits</h3>
+          {subcircuits.map(subcircuit => (
             <button
-              key={`${type}-${label}`}
-              className={`component-button ${
-                toolMode === 'add' && selectedComponent === type ? 'active' : ''
-              }`}
+              key={subcircuit.id}
+              className={selectedComponentType === 'subcircuit' && selectedComponentType === subcircuit.id ? 'active' : ''}
               onClick={() => {
-                onToolModeChange('add');
-                onSelectComponent(type);
+                setSelectedTool('add');
+                setSelectedComponentType('subcircuit'); // Indicate it's a subcircuit
+                // You might want a better way to pass the specific subcircuit ID to Canvas
+                // For now, let's just make it implicitly picked up by Canvas's drag handler
               }}
+              draggable="true"
+              onDragStart={(e) => handleDragStart(e, 'subcircuit', subcircuit.id)} // Pass subcircuitId
             >
-              <span className="component-icon">{icon}</span>
-              <span className="component-label">{label}</span>
+              {subcircuit.name}
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Actions */}
-      <div className="toolbar-section actions-section">
-        <button
-          className="delete-button"
-          onClick={onDelete}
-          disabled={!hasSelection}
-        >
-          <span className="action-icon">🗑️</span>
-          <span className="action-label">Delete Selected</span>
-        </button>
-      </div>
+      )}
     </div>
   );
 };

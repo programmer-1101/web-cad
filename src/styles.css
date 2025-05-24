@@ -1,0 +1,59 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.toolbar {
+  width: 200px;
+  background: #2c3e50;
+  color: white;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.tool-section {
+  margin-bottom: 20px;
+}
+
+.tool-section h3 {
+  margin-top: 0;
+  border-bottom: 1px solid #444;
+  padding-bottom: 5px;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 5px;
+  background: #34495e;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button.active {
+  background: #3498db;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+}
+
+.canvas {
+  flex: 1;
+  background: white;
+}
+
+.properties-panel {
+  width: 250px;
+  background: #f5f5f5;
+  padding: 10px;
+  overflow-y: auto;
+}
