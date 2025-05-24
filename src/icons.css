@@ -1,0 +1,16 @@
+/* Add this if you want proper icons */
+.icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.icon-add {
+  background-image: url('./assets/add-icon.svg');
+}
+
+.icon-save {
+  background-image: url('./assets/save-icon.svg');
+}
