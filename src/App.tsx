@@ -23,17 +23,6 @@ const App = () => {
 
   const handleCreateSubcircuit = useCallback(() => {
     // This is where you'd initiate the subcircuit creation process.
-    // For a real app, this would likely involve:
-    // 1. Entering a "subcircuit creation mode".
-    // 2. Allowing user to select existing components/wires on the canvas.
-    // 3. Opening a modal/panel for naming the subcircuit and defining its input/output terminals.
-    // 4. Removing selected components/wires from the main canvas.
-    // 5. Adding the new subcircuit definition to the `subcircuits` state.
-
-    // --- TEMPORARY MOCK FOR DEMONSTRATION ---
-    // Let's create a very simple "AND gate" subcircuit from a couple of resistors
-    // This is just a placeholder to show the flow.
-    // In a real scenario, the user selects components and defines terminals interactively.
 
     if (components.length < 2) {
       alert("Please place at least two components on the canvas to create a subcircuit (for this simplified example).");
