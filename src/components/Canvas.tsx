@@ -2,8 +2,7 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { CircuitComponent, Wire, ToolMode, ComponentType, SubCircuit } from '../types/types';
 
-const GRID_SIZE = 20;
-const COMPONENT_SIZE = 40; // Default size for basic components
+import { GRID_SIZE, COMPONENT_SIZE } from '../constants';
 
 interface CanvasProps {
   components: CircuitComponent[];

@@ -6,7 +6,7 @@ import PropertiesPanel from './components/PropertiesPanel';
 import { CircuitComponent, Wire, ToolMode, ComponentType, SubCircuit, Terminal } from './types/types'; // Import new types
 import './styles.css';
 
-const COMPONENT_SIZE = 40
+import { COMPONENT_SIZE } from './constants';
 
 const App = () => {
   const [components, setComponents] = useState<CircuitComponent[]>([]);
