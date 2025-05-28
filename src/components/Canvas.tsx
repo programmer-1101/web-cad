@@ -14,6 +14,7 @@ interface CanvasProps {
   onDropComponent: (e: React.DragEvent) => void; // New prop for handling drops
   draggedComponentType: ComponentType | null; // For visual feedback during drag
   subcircuits: SubCircuit[]; // Pass subcircuits to resolve their definitions
+  isBulbYellow: boolean;
 }
 
 const Canvas: React.FC<CanvasProps> = ({
@@ -25,7 +26,8 @@ const Canvas: React.FC<CanvasProps> = ({
   selectedComponentType,
   onDropComponent, // Destructure new prop
   draggedComponentType, // Destructure new prop
-  subcircuits, // Destructure new prop
+  subcircuits, // Destructure new 
+  isBulbYellow,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [dragging, setDragging] = useState<string | null>(null);
@@ -302,7 +304,7 @@ const Canvas: React.FC<CanvasProps> = ({
               d={`M5,${COMPONENT_SIZE / 2} C15,${COMPONENT_SIZE / 2 - 15} 25,${COMPONENT_SIZE / 2 + 15} ${COMPONENT_SIZE / 2},${COMPONENT_SIZE / 2} C${COMPONENT_SIZE / 2 + 10},${COMPONENT_SIZE / 2 - 15} ${COMPONENT_SIZE - 15},${COMPONENT_SIZE / 2 + 15} ${COMPONENT_SIZE - 5},${COMPONENT_SIZE / 2}`}
               stroke="black"
               strokeWidth="2"
-              fill="none"
+              fill={isBulbYellow ? 'yellow' : 'black'}
             />
             <text
               x={COMPONENT_SIZE / 2}
@@ -339,7 +341,7 @@ const Canvas: React.FC<CanvasProps> = ({
         )}
         {component.type === 'bulb' && (
           <>
-            <circle cx={COMPONENT_SIZE / 2} cy={COMPONENT_SIZE / 2} r={COMPONENT_SIZE / 2 - 5} stroke="black" strokeWidth="2" fill="none" />
+            <circle cx={COMPONENT_SIZE / 2} cy={COMPONENT_SIZE / 2} r={COMPONENT_SIZE / 2 - 5} stroke="black" strokeWidth="2" fill={isBulbYellow ? 'yellow' : 'none'} />
             <line x1={COMPONENT_SIZE / 2 - 10} y1={COMPONENT_SIZE / 2 - 10} x2={COMPONENT_SIZE / 2 + 10} y2={COMPONENT_SIZE / 2 + 10} stroke="black" strokeWidth="2" />
             <line x1={COMPONENT_SIZE / 2 + 10} y1={COMPONENT_SIZE / 2 - 10} x2={COMPONENT_SIZE / 2 - 10} y2={COMPONENT_SIZE / 2 + 10} stroke="black" strokeWidth="2" />
           </>

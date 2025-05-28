@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Canvas from './components/Canvas';
 import Toolbar from './components/Toolbar';
 import PropertiesPanel from './components/PropertiesPanel';
@@ -14,12 +14,34 @@ const App = () => {
   const [selectedTool, setSelectedTool] = useState<ToolMode>('select');
   const [selectedComponentType, setSelectedComponentType] = useState<ComponentType>('resistor');
   const [selectedItem, setSelectedItem] = useState<CircuitComponent | null>(null);
-
+  const [isBulbYellowMode, setIsBulbYellowMode] = useState(false);
   // New state for custom subcircuits
   const [subcircuits, setSubcircuits] = useState<SubCircuit[]>([]);
   // New state to track the component being dragged from the toolbar
   const [draggedComponentType, setDraggedComponentType] = useState<ComponentType | null>(null);
   const [draggedSubcircuitId, setDraggedSubcircuitId] = useState<string | null>(null);
+
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if(event.key === 'y' || event.key === 'Y') {
+      setIsBulbYellowMode(true);
+    }
+  }, []);
+
+  const handleKeyUp = useCallback((event: KeyboardEvent) => {
+    if(event.key === 't' || event.key === 'T') {
+      setIsBulbYellowMode(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [handleKeyDown, handleKeyUp]);
 
   const handleCreateSubcircuit = useCallback(() => {
     // This is where you'd initiate the subcircuit creation process.
@@ -148,6 +170,7 @@ const App = () => {
 
       <div className="main-content">
         <Canvas
+          isBulbYellow={isBulbYellowMode}
           components={components}
           setComponents={setComponents}
           wires={wires}
