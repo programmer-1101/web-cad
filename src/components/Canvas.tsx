@@ -5,11 +5,11 @@ import { CircuitComponent, Wire, ToolMode, ComponentType, SubCircuit } from '../
 import { GRID_SIZE, COMPONENT_SIZE } from '../constants';
 
 interface CanvasProps {
-  components: CircuitComponent[];
+  components: CircuitComponent[]; // The items currently drawn
   setComponents: React.Dispatch<React.SetStateAction<CircuitComponent[]>>;
   wires: Wire[];
   setWires: React.Dispatch<React.SetStateAction<Wire[]>>;
-  selectedTool: ToolMode;
+  selectedTool: ToolMode; // Weather you are selecting, adding or wiring componenets
   selectedComponentType: ComponentType;
   onDropComponent: (e: React.DragEvent) => void; // New prop for handling drops
   draggedComponentType: ComponentType | null; // For visual feedback during drag
@@ -54,8 +54,6 @@ const Canvas: React.FC<CanvasProps> = ({
 
     // This part is now mostly handled by drag and drop,
     // but we can keep it for direct click placement if desired.
-    // If you want only drag & drop, you can remove this block.
-    // For now, let's keep it to support both.
     const rect = svgRef.current.getBoundingClientRect();
     const x = snapToGrid(e.clientX - rect.left - COMPONENT_SIZE / 2);
     const y = snapToGrid(e.clientY - rect.top - COMPONENT_SIZE / 2);
@@ -443,7 +441,7 @@ const Canvas: React.FC<CanvasProps> = ({
           y1={currentWire.y1}
           x2={currentWire.x2}
           y2={currentWire.y2}
-          stroke="blue"
+          stroke="red"
           strokeWidth="2"
         />
       )}
